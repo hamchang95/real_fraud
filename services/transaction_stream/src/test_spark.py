@@ -1,4 +1,5 @@
 # Import necessary libraries
+from importlib.metadata import files
 import os
 import numpy as np
 import pandas as pd
@@ -22,6 +23,14 @@ n_customers = int(sys.argv[1]) if len(sys.argv) > 1 else 1000000
 def array_choice(array):
     index = (rand()*size(array)).cast("int")
     return array[index]
+
+def get_list_postcode_csv():
+    import requests
+    folder_url = 'https://github.com/hamchang95/real_fraud/tree/master/data/postcode'
+    response = requests.get(folder_url)
+    files = response.json()
+    csv_urls = [f['download_url'] for f in files if f['name'].endswith('.csv')]
+    return csv_urls
 
 def generate_customer_profiles_table(n_customers):
     # define epoch time range 
@@ -63,6 +72,15 @@ def generate_customer_profiles_table(n_customers):
     df = df \
     .withColumnRenamed("id", "CUSTOMER_ID") \
     .drop(*['epoch_date_of_birth', 'epoch_account_open_date'])
+
+    # get postcode data
+    postcode = spark.read.csv(get_list_postcode_csv(), header=True, inferSchema=True) 
+    print("Postcode data loaded")
+
+    # associate postcode to customers based on their x and y coordinates
+    df = df.join(postcode, (floor(df.x_customer_id) == postcode.lat) & (floor(df.y_customer_id) == postcode.long), how='left') \
+    .drop('lat', 'long') \
+    .withColumnRenamed('pcds', 'postcode')
 
     df.printSchema()
     df.show(5)

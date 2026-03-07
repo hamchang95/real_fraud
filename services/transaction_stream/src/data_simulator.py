@@ -139,9 +139,6 @@ def generate_transactions_table(customer_profile, start_date = "2018-04-01", nb_
     
     return customer_transactions  
 
-def compute_available_terminals(row, x_y_terminals, r):
-    return get_list_terminals_within_radius(row, x_y_terminals, r)
-
 def generate_dataset(n_customers = 10000, n_terminals = 1000000, nb_days=90, start_date="2018-04-01", r=5):
     
     start_time=time.time()
@@ -175,7 +172,3 @@ def generate_dataset(n_customers = 10000, n_terminals = 1000000, nb_days=90, sta
     transactions_df.rename(columns = {'index':'TRANSACTION_ID'}, inplace = True)
     
     return (customer_profiles_table, terminal_profiles_table, transactions_df)
-
-if __name__ == "__main__":
-    df = generate_dataset(n_customers=1000, n_terminals=5000, nb_days=10, r=50)
-    print(df.head())
