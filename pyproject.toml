@@ -1,0 +1,15 @@
+[project]
+name = "real-fraud"
+version = "0.1.0"
+description = "Project to stream real-time simulated credit card fraud data"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.2",
+    "pandas>=3.0.1",
+    "pyspark>=4.1.1",
+    "seaborn>=0.13.2",
+]
